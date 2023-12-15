@@ -1,4 +1,5 @@
 import re
+import json
 
 def name(name):
     if name:
@@ -21,19 +22,19 @@ def mobile_number(number):
     return False
 
 def aadhar_number(number):
-    regex = "^\d{4}\s\d{4}\s\d{4}$"
+    regex = r"^\d{4}\s\d{4}\s\d{4}$"
     if re.fullmatch(regex, number):
         return True
     return False
 
 def license_number(number):
-    regex = "^[A-Za-z0-9]{6,12}$"
+    regex = r"^[A-Za-z0-9]{6,12}$"
     if re.fullmatch(regex, number):
         return True
     return False
 
 def password(password):
-    regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+    regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
     if re.fullmatch(regex, password):
         confirm_password = input("Confirm password: ")
         if password == confirm_password:
@@ -69,14 +70,22 @@ func = [
     license_number,
     password
 ]
+with open('data.json', 'r') as file:
+    datas = json.load(file)
+data = {}
 i = 0
-while i < 8:
+while i < 7:
     a = input(signup_questions[i]+": ")
     if a.lower() == "exit":
         break
     if a.replace(" ","") == "" or not func[i](a):
         print("Provide a valid "+error[i])
     else:
+        data[error[i]] = a
         i += 1
-if i==8:
+
+if i == 7:
     print("Account created successfully.")
+    datas[data["email"]] = data
+    with open('data.json', 'w') as file:
+        json.dump(datas, file)
