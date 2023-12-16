@@ -1,6 +1,17 @@
 import re
 import json
+from connection import Connection
 
+conn = Connection()
+def signin():
+    user_name = input("Enter your email: ")
+    if user_name in datas:
+        user_password = input("Enter your password: ")
+        if user_password == datas[user_name]["password"]:
+            return True
+        print("Wrong Password")
+    print("Wrong username")
+    return False
 def name(name):
     if name:
         return True
@@ -70,22 +81,29 @@ func = [
     license_number,
     password
 ]
-with open('data.json', 'r') as file:
-    datas = json.load(file)
-data = {}
-i = 0
-while i < 7:
-    a = input(signup_questions[i]+": ")
-    if a.lower() == "exit":
-        break
-    if a.replace(" ","") == "" or not func[i](a):
-        print("Provide a valid "+error[i])
-    else:
-        data[error[i]] = a
-        i += 1
 
-if i == 7:
-    print("Account created successfully.")
-    datas[data["email"]] = data
-    with open('data.json', 'w') as file:
-        json.dump(datas, file)
+while True:
+    signup = True if input("Type Y for signup N for signin: ").upper() == 'Y' else False
+    if signup:
+        data = ""
+        i = 0
+        while i < 7:
+            a = input(signup_questions[i]+": ")
+            if a.lower() == "exit":
+                break
+            if a.replace(" ","") == "" or not func[i](a):
+                print("Provide a valid "+error[i])
+            else:
+                data += a+","
+                i += 1
+
+        if i == 7:
+            print("Account created successfully.")
+            conn.row_add("User_Details", data)
+
+    else:
+        if signin():
+            break
+        else:
+            continue
+
