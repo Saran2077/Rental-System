@@ -1,17 +1,23 @@
 import re
-import json
 from connection import Connection
 
 conn = Connection()
+email = conn.fetchData("User_Details", "Email")
+password = conn.fetchData("User_Details", "Password")
+user_data = {str(i)[2:-3] : str(j)[2:-3] for i, j in zip(email, password)}
+
 def signin():
     user_name = input("Enter your email: ")
-    if user_name in datas:
+    if user_name in user_data:
         user_password = input("Enter your password: ")
-        if user_password == datas[user_name]["password"]:
+        if user_password == user_data[user_name]:
             return True
         print("Wrong Password")
+        return False
     print("Wrong username")
     return False
+
+
 def name(name):
     if name:
         return True
@@ -85,7 +91,7 @@ func = [
 while True:
     signup = True if input("Type Y for signup N for signin: ").upper() == 'Y' else False
     if signup:
-        data = ""
+        data = str(len(user_data) + 1)+','
         i = 0
         while i < 7:
             a = input(signup_questions[i]+": ")
@@ -94,12 +100,13 @@ while True:
             if a.replace(" ","") == "" or not func[i](a):
                 print("Provide a valid "+error[i])
             else:
-                data += a+","
+                data += '"'+a+'",'
                 i += 1
 
         if i == 7:
+            print(data[:-1])
             print("Account created successfully.")
-            conn.row_add("User_Details", data)
+            conn.row_add("User_Details", data[:-1])
 
     else:
         if signin():
