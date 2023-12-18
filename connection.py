@@ -4,9 +4,9 @@ from mysql.connector import Error
 class Connection:
     def __init__(self):
         self.create_server_connection = mysql.connector.connect(
-                host = "127.0.0.1",
+                host = "localhost",
                 user = "root",
-                passwd = "2580",
+                passwd = "1234",
                 database = "Rental_System"
         )
         self.cursor = self.create_server_connection.cursor()
@@ -20,7 +20,7 @@ class Connection:
         return 0 if self.column_count == None else self.column_count
 
     def fetchData(self, table_name, columns, condition=""):
-        self.cursor.execute(f"SELECT {columns} FROM {table_name};")
+        self.cursor.execute(f"SELECT {columns} FROM {table_name} {condition};")
         self.data = self.cursor.fetchall()
         return self.data
 #

@@ -1,29 +1,51 @@
+from connection import Connection
+
+conn = Connection()
+vehicle_count = len(conn.fetchData("Garage","*"))
+
 class Garage:
     def __inti__(self):
         pass
     def add(self, vehicle):
-        vehicle_model = input("What is the f'vehicle' Model: ")
-        vehicle_id = input("Enter the f'vehicle''s license number: ")
-        vehicle_type = vehicle
-        vehicle_color = input("Enter the color of the f'vehicle': ")
-        vehicle_top_speed = input("Top Speed of the f'vehicle': ")
-        vehicle_mileage = input("Mileage of the f'vehicle': ")
-        vehicle_services = 0
-        vehicle_km = 0
-        vehicle_availability = "Available"
+        vehicle_questions = [
+            f"What if the Brand of the {vehicle}",
+            f"What is the Model of the {vehicle}",
+            f"Manufactured Year",
+            f"Color of the {vehicle}",
+            f"Registration Number"
+        ]
 
-    def available(self, vehicle):
+        data = f'{vehicle_count}'+',"'+f'{vehicle}'+'"'
+        i = 0
+        while i < 5:
+            a = input(vehicle_questions[i]+": ")
+            if a.replace(" ","") == "":
+                continue
+            i += 1
+            data += ',' +'"'+a+'"'
+        if i == 5:
+            data += ',"'+"Available"+'",'+'0'+','+'0'
+            print(data)
+            conn.row_add("Garage", data)
 
-    def rented(self):
+    def available(self, vehicle, admin=False):
+        admin_column = "*"
+        user_column = 'V_ID,BRAND,MODEL,YEAR'
+        self.available_cars = conn.fetchData("Garage", admin_column if admin else user_column, f'WHERE TYPE = "{vehicle}" AND AvailabilityStatus = "Available"')
+        print(self.available_cars)
+    # def rented(self):
+    #
+    # def due(self):
+    #
+    #
+    # def due_send(self):
+    #
+    #
+    # def returned(self):
+    #
+    #
+    # def
 
-    def due(self):
 
-
-    def due_send(self):
-
-
-    def returned(self):
-
-
-    def
-
+garage = Garage()
+garage.available("Car")

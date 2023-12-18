@@ -6,6 +6,7 @@ email = conn.fetchData("User_Details", "Email")
 password = conn.fetchData("User_Details", "Password")
 user_data = {str(i)[2:-3] : str(j)[2:-3] for i, j in zip(email, password)}
 
+
 def signin():
     user_name = input("Enter your email: ")
     if user_name in user_data:
