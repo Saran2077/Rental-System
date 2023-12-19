@@ -40,6 +40,8 @@ class Connection:
         self.cursor.execute(f"SELECT {column_name} FROM {table_name} WHERE {condition}")
         self.searched_vehice = self.cursor.fetchall()
         return self.searched_vehice
+
+
 #
 # create_server_connection = mysql.connector.connect(
 #                 host = "127.0.0.1",

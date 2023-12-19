@@ -37,19 +37,7 @@ class Garage:
         self.rented_cars = conn.fetchData("Garage", "*", f'WHERE TYPE = "{vehicle}" AND AvailabilityStatus = "Rented"')
         print(self.rented_cars)
 
-
-
-    # def due(self):
-    #
-    #
-    # def due_send(self):
-    #
-    #
     # def returned(self):
-    #
-    #
-    # def
-
 
 garage = Garage()
 garage.rented("Car")

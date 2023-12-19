@@ -27,8 +27,7 @@ class Manager:
         for i in self.dued_vehicle:
             conn.update(table_name="Garage", column_name="Services", set_value="Services+1", condition=f"V_ID = {i[0]}")
 
+
+
 manager = Manager()
 print(manager.due())
-
-
-
