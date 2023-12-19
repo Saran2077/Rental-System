@@ -14,13 +14,9 @@ class Manager:
         conn.delete("Garage", f"WHERE V_ID = {v_id}")
         print(f"VehicleID with {v_id} is successfully removed")
 
-    def search(self, v_id = "", v_name = ""):
+    def search(self, v_id):
         self.searched_vehicle = conn.search("Garage", "*", f"V_ID = {v_id}")
         print(self.searched_vehicle)
-
-    def due(self):
-        self.due_vehicle = conn.fetchData(table_name="Garage", columns='V_ID,BRAND,MODEL,REGISTRATIONNUMBER', condition="WHERE (Running_KM/(3000*(Services+1))) >= 1")
-        return self.due_vehicle
 
     def send_due(self):
         self.dued_vehicle = self.due()

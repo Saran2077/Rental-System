@@ -24,20 +24,13 @@ class Garage:
             i += 1
             data += ',' +'"'+a+'"'
         if i == 5:
-            data += ',"'+"Available"+'",'+'0'+','+'0'
+            data += ',"'+"Available"+'",'+'0'+','+'0'+','+input(f"Enter the Price of the {vehicle} per day: ")
             conn.row_add("Garage", data)
 
-    def available(self, vehicle, admin=False):
-        admin_column = "*"
-        user_column = 'V_ID,BRAND,MODEL,YEAR'
-        self.available_cars = conn.fetchData("Garage", admin_column if admin else user_column, f'WHERE TYPE = "{vehicle}" AND AvailabilityStatus = "Available"')
-        print(self.available_cars)
 
-    def rented(self, vehicle,  admin=False):
-        self.rented_cars = conn.fetchData("Garage", "*", f'WHERE TYPE = "{vehicle}" AND AvailabilityStatus = "Rented"')
-        print(self.rented_cars)
+
 
     # def returned(self):
 
 garage = Garage()
-garage.rented("Car")
+garage.add("Car")

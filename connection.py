@@ -4,14 +4,15 @@ from mysql.connector import Error
 class Connection:
     def __init__(self):
         self.create_server_connection = mysql.connector.connect(
-                host = "localhost",
+                host = "127.0.0.1",
                 user = "root",
-                passwd = "1234",
+                passwd = "2580",
                 database = "Rental_System"
         )
         self.cursor = self.create_server_connection.cursor()
 
     def row_add(self, table_name, values):
+        print(values)
         self.cursor.execute(f"INSERT INTO {table_name} VALUES ({values});")
         self.create_server_connection.commit()
 
