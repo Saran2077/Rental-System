@@ -29,7 +29,7 @@ class Connection:
         self.create_server_connection.commit()
 
     def update(self, table_name, column_name, set_value, condition):
-        self.cursor.execute(f'UPDATE {table_name} SET {column_name} = "{set_value}" WHERE {condition}')
+        self.cursor.execute(f'UPDATE {table_name} SET {column_name} = {set_value} WHERE {condition}')
         self.create_server_connection.commit()
 
     def delete(self, table_name, condition):
