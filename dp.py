@@ -1,19 +1,19 @@
-# #dp knight problem
-# board = [[None] * 8 for i in range(8)]
-# stack = [[1,6]]
-# board[1][6] = 0
-# moves = [[1,2], [1,-2], [-2,1], [-2,-1], [2,1], [2,-1], [-1,2], [-1,-2]]
-# while stack:
-#     i, j = stack.pop()
-#     for k in moves:
-#         if i+k[0] >= 0 and i+k[0] < 8 and j+k[1] >=0 and j+k[1] < 8:
-#             if board[i+k[0]][j+k[1]] == None or (board[i][j] + 1) < board[i+k[0]][j+k[1]]:
-#                 board[i+k[0]][j+k[1]] = board[i][j] + 1
-#                 stack.append([i+k[0], j+k[1]])
-# for i in board:
-#     print(*i)
-#
-#
+#dp knight problem
+board = [[None] * 8 for i in range(8)]
+stack = [[1,6]]
+board[1][6] = 0
+moves = [[1,2], [1,-2], [-2,1], [-2,-1], [2,1], [2,-1], [-1,2], [-1,-2]]
+while stack:
+    i, j = stack.pop()
+    for k in moves:
+        if i+k[0] >= 0 and i+k[0] < 8 and j+k[1] >=0 and j+k[1] < 8:
+            if board[i+k[0]][j+k[1]] == None or (board[i][j] + 1) < board[i+k[0]][j+k[1]]:
+                board[i+k[0]][j+k[1]] = board[i][j] + 1
+                stack.append([i+k[0], j+k[1]])
+for i in board:
+    print(*i)
+
+
 
 
 a = "abaaba"

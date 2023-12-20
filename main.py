@@ -1,8 +1,17 @@
-# import sign
-from garage import Car, Bike
-import json
+from sign import *
+from garage import Garage
+from reports import Reports
+
+report = Reports()
+garage = Garage()
+
+# if login():
+while True:
+    print("Please enter 1 or 2")
+    print("1 Vehicle Inventory")
+    print("2 Reports")
+    a = input()
+    if a.lower() == 'exit': break
+    report.option()
 
 
-with open('data.json', 'r') as file:
-    data = json.load(file)
-    print(data["saranjamespond123@gmail.com"]["name"])

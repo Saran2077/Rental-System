@@ -12,6 +12,8 @@ def signin():
     if user_name in user_data:
         user_password = input("Enter your password: ")
         if user_password == user_data[user_name]:
+            name = conn.fetchData(table_name="User_Details", columns="Name", condition=f'WHERE email = "{user_name}"')
+            print(f"Welcome back {name[0][0]}!")
             return True
         print("Wrong Password")
         return False
@@ -89,29 +91,38 @@ func = [
     password
 ]
 
-while True:
-    signup = True if input("Type Y for signup N for signin: ").upper() == 'Y' else False
-    if signup:
-        data = str(len(user_data) + 1)+','
-        i = 0
-        while i < 7:
-            a = input(signup_questions[i]+": ")
-            if a.lower() == "exit":
-                break
-            if a.replace(" ","") == "" or not func[i](a):
-                print("Provide a valid "+error[i])
-            else:
-                data += '"'+a+'",'
-                i += 1
+import subprocess
+import os
 
-        if i == 7:
-            print(data[:-1])
-            print("Account created successfully.")
-            conn.row_add("User_Details", data[:-1])
+def clear_screen():
+    os.system('cls')
 
-    else:
-        if signin():
-            break
+
+
+def login():
+    while True:
+        signup = True if input("Type Y for signup N for signin: ").upper() == 'Y' else False
+        if signup:
+            data = str(len(user_data) + 1)+','
+            i = 0
+            while i < 7:
+                a = input(signup_questions[i]+": ")
+                os.system('cls')
+                if a.lower() == "exit":
+                    break
+                if a.replace(" ","") == "" or not func[i](a):
+                    print("Provide a valid "+error[i])
+                else:
+                    data += '"'+a+'",'
+                    i += 1
+
+            if i == 7:
+                print("Account created successfully.")
+                conn.row_add("User_Details", data[:-1])
+
         else:
-            continue
+            if signin():
+                break
+            else:
+                continue
 
