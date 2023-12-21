@@ -1,12 +1,13 @@
 import mysql.connector
 from mysql.connector import Error
+from prettytable import PrettyTable
 
 class Connection:
     def __init__(self):
         self.create_server_connection = mysql.connector.connect(
                 host = "localhost",
                 user = "root",
-                passwd = "1234",
+                passwd = "2580",
                 database = "Rental_System"
         )
         self.cursor = self.create_server_connection.cursor()
@@ -40,6 +41,12 @@ class Connection:
         self.cursor.execute(f"SELECT {column_name} FROM {table_name} WHERE {condition}")
         self.searched_vehice = self.cursor.fetchall()
         return self.searched_vehice
+
+    def prettyPrint(self, column, data):
+        my_Table = PrettyTable(column.split(','))
+        for i in data:
+            my_Table.add_row([*i])
+        print(my_Table)
 
 
 

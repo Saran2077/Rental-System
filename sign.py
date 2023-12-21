@@ -2,9 +2,22 @@ import re
 from connection import Connection
 
 conn = Connection()
+
+def encrypt(passwd):
+    s = ""
+    for i in passwd:
+        s += chr(ord(i)-1) + chr(ord(i)+1)
+    return s
+
+def decrypt(passwd):
+    s = ""
+    for i in range(0, len(passwd), 2):
+        s +=chr((ord(passwd[i]) + ord(passwd[i+1])) // 2)
+    return s
+
 email = conn.fetchData("User_Details", "Email")
 password = conn.fetchData("User_Details", "Password")
-user_data = {str(i)[2:-3] : str(j)[2:-3] for i, j in zip(email, password)}
+user_data = {str(i)[2:-3] : decrypt(str(j)[2:-3]) for i, j in zip(email, password)}
 
 
 def signin():
@@ -107,13 +120,15 @@ def login():
             i = 0
             while i < 7:
                 a = input(signup_questions[i]+": ")
-                os.system('cls')
                 if a.lower() == "exit":
                     break
                 if a.replace(" ","") == "" or not func[i](a):
                     print("Provide a valid "+error[i])
                 else:
-                    data += '"'+a+'",'
+                    if error[i] == "password":
+                        data += '"' + encrypt(a) + '",'
+                    else:
+                        data += '"'+a+'",'
                     i += 1
 
             if i == 7:
@@ -126,3 +141,5 @@ def login():
             else:
                 continue
 
+
+login()

@@ -77,3 +77,4 @@ class Garage:
 
 
 
+garage = Garage()

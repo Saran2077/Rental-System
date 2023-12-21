@@ -27,7 +27,7 @@ class Renter:
             if a == "confirm":
                 self.column = "S_NO, USER_ID, V_ID, RENT_DATE, RENTAL_STATUS"
                 for i in self.cart:
-                    self.sno = conn.count(table_name="Rental_History", column_name="*")
+                    self.sno = len(conn.fetchData(table_name="Rental_History", columns="*"))
                     query = f'{self.sno + 1}, {user_id}, {i[0]}, CURRENT_DATE(), "Pending"'
                     conn.row_add(table_name="Rental_History", columns=self.column, values=query)
                 break
@@ -36,6 +36,6 @@ class Renter:
             else:
                 print("Error you cant add two cars or two bikes")
 renter = Renter()
-renter.renter_add("All", 2)
+renter.renter_add("All", 1)
 
 
