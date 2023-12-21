@@ -11,8 +11,8 @@ class Connection:
         )
         self.cursor = self.create_server_connection.cursor()
 
-    def row_add(self, table_name, values):
-        self.cursor.execute(f"INSERT INTO {table_name} VALUES ({values});")
+    def row_add(self, table_name, values, columns=""):
+        self.cursor.execute(f"INSERT INTO {table_name} "+(f"({columns})" if columns != "" else "") +f"VALUES ({values});")
         self.create_server_connection.commit()
 
     def count(self, table_name, column_name):

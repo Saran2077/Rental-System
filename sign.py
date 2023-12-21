@@ -118,7 +118,7 @@ def login():
 
             if i == 7:
                 print("Account created successfully.")
-                conn.row_add("User_Details", data[:-1])
+                conn.row_add("User_Details", columns="", values=data[:-1])
 
         else:
             if signin():
