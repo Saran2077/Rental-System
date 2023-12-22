@@ -8,6 +8,10 @@ class Renter:
     def __init__(self):
         pass
 
+    def rent_vehicle(self, v_id, user_name):
+        conn.update("Garage", "AvailabilityStatus", '"Rented"', f"V_ID = {v_id}")
+        print(f'Successfully VehicleID with {v_id} is purchased by {user_name}')
+
     def can_rent(self, cart, new_item):
         if conn.fetchData(table_name="Garage", columns="AvailabilityStatus", condition=f'WHERE V_ID = {new_item}')[0][0] == 'Available':
             if len([*cart, new_item]) <= 2:
@@ -15,8 +19,11 @@ class Renter:
                     return True
         return False
 
-    def cart(self):
-        pass
+    def return_vehicle(self, user_id):
+        for i in conn.fetchData(table_name="Rental_History", columns="*", condition=f"WHERE USER_ID = {user_id} AND Rental_Status = 'Pending'"):
+            conn.update("Garage", "AvailabilityStatus", '"Available"', f"V_ID = {i[2]}")
+            conn.update(table_name="Rental_History", column_name="Rental_Status", set_value='"Completed"', condition=f"s_no = {i[0]}")
+            conn.update(table_name="Rental_History", column_name="Drop_Date", set_value="CURRENT_DATE()", condition=f"s_no = {i[0]}")
 
     def renter_add(self, type, user_id):
         report.available(type)
@@ -31,13 +38,13 @@ class Renter:
                     self.sno = len(conn.fetchData(table_name="Rental_History", columns="*"))
                     query = f'{self.sno + 1}, {user_id}, {i[0]}, CURRENT_DATE(), "Pending"'
                     conn.row_add(table_name="Rental_History", columns=self.column, values=query)
-                    conn.update(table_name="Garage", column_name="AvailabilityStatus", set_value='"Rented"', condition=f"V_ID = {i[0]}")
+                    self.rent_vehicle(v_id=i[0], user_name=user_id)
                 break
             if self.can_rent(self.cart, a):
                 self.cart.append(a)
             else:
                 print("Error you cant add two cars or two bikes")
 renter = Renter()
-renter.renter_add("All", 1)
+renter.return_vehicle(1)
 
 

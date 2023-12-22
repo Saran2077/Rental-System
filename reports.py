@@ -13,10 +13,6 @@ class Reports:
         self.due_vehicle = conn.fetchData(table_name="Garage", columns='V_ID,BRAND,MODEL,REGISTRATIONNUMBER', condition="WHERE (Running_KM/(3000*(Services+1))) >= 1")
         conn.prettyPrint(column, self.due_vehicle)
 
-    def vehicle_details(self):
-        self.details = conn.fetchData(table_name="Garage", columns="*")
-        return self.details
-
     def rented(self, vehicle, admin=False):
         column = "V_ID,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Services,Price"
         self.rented_cars = conn.fetchData("Garage", "*", f'WHERE TYPE = "{vehicle}" AND AvailabilityStatus = "Rented"')
@@ -33,5 +29,4 @@ class Reports:
         print("2 Show all vehicles")
         print("3 Rented Vehicle")
         print("4 Available Vehicle")
-
 

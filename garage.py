@@ -33,7 +33,11 @@ class Garage:
 
     def search(self, v_id):
         self.searched_vehicle = conn.search("Garage", "*", f"V_ID = {v_id}")
-        print(self.searched_vehicle)
+        conn.prettyPrint(column="V_ID,Type,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Running_KM,Services,Price", data=self.searched_vehicle)
+
+    def vehicle_details(self):
+        self.details = conn.fetchData(table_name="Garage", columns="*")
+        conn.prettyPrint(column="V_ID,Type,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Runnig_KM,Services,Price", data=self.details)
 
     def option(self):
         print("1 Add a Vehicle")
@@ -64,8 +68,7 @@ class Garage:
                     print("Not a valid v_id")
                     self.option()
             elif self.choice == '4':
-                self.data = conn.fetchData(table_name="Garage", columns="*", condition="")
-                print(self.data)
+                self.vehicle_details()
             else:
                 print("Please enter a valid option")
                 self.option()
@@ -78,3 +81,4 @@ class Garage:
 
 
 garage = Garage()
+garage.vehicle_details()
