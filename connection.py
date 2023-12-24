@@ -5,7 +5,7 @@ from prettytable import PrettyTable
 class Connection:
     def __init__(self):
         self.create_server_connection = mysql.connector.connect(
-                host = "localhost",
+                host = "127.0.0.1",
                 user = "root",
                 passwd = "2580",
                 database = "Rental_System"

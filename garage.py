@@ -1,7 +1,8 @@
 from connection import Connection
 
 conn = Connection()
-vehicle_count = len(conn.fetchData("Garage","*"))
+vehicle_count = [item[0] for item in conn.fetchData(table_name="Garage", columns="V_ID")]
+
 
 class Garage:
     def __inti__(self):
@@ -15,7 +16,7 @@ class Garage:
             f"Registration Number"
         ]
 
-        data = f'{vehicle_count+1}'+',"'+f'{vehicle}'+'"'
+        data = f'{len(vehicle_count)+1}'+',"'+f'{vehicle}'+'"'
         i = 0
         while i < 5:
             a = input(vehicle_questions[i]+": ")
@@ -26,6 +27,8 @@ class Garage:
         if i == 5:
             data += ',"'+"Available"+'",'+'0'+','+'0'+','+input(f"Enter the Price of the {vehicle} per day: ")
             conn.row_add("Garage", data)
+            vehicle_count.append(data.split(',')[0])
+            print("Successfully Vehicle is added to our garage...")
 
     def remove_vehicle(self, v_id):
         conn.delete("Garage", f"WHERE V_ID = {v_id}")
@@ -39,6 +42,7 @@ class Garage:
         self.details = conn.fetchData(table_name="Garage", columns="*")
         conn.prettyPrint(column="V_ID,Type,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Runnig_KM,Services,Price", data=self.details)
 
+
     def option(self):
         print("1 Add a Vehicle")
         print("2 Remove a Vehicle")
@@ -46,26 +50,25 @@ class Garage:
         print("4 Show Garage")
         self.choice = input("Please Enter: ")
         if self.choice.lower() == 'exit': return
-        if self.choice.isdigit() == False: print("Enter a number")
-        if int(self.choice) >= 0 and int(self.choice) <= 4:
+        if self.choice.isdigit() and int(self.choice) >= 0 and int(self.choice) <= 4:
             if self.choice == '1':
                 type = input("What vehicle do you want to add (Car/Bike): ")
                 if type.lower() == "car" or type.lower() == "bike": self.add(type)
-                else: print("Wrong input..")
+                else: print("Please enter a valid option")
                 self.option()
             elif self.choice == '2':
                 v_id = input("Please Enter a V_ID to remove the vehicle: ")
-                if v_id <= vehicle_count and v_id > 0 and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0] == ("Available"):
+                if v_id in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0] == ("Available"):
                     self.remove_vehicle(v_id)
                 else:
-                    print("Not a valid v_id")
+                    print(f"We dont have any vehicle with this V_ID = {v_id}")
                     self.option()
             elif self.choice == '3':
                 v_id = input("Enter a V_ID to search: ")
-                if int(v_id) <= vehicle_count and int(v_id) > 0 and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] == ("Available"):
+                if int(v_id) in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] == ("Available"):
                     self.search(v_id)
                 else:
-                    print("Not a valid v_id")
+                    print(f"We dont have any vehicle with this V_ID = {v_id}")
                     self.option()
             elif self.choice == '4':
                 self.vehicle_details()
@@ -73,7 +76,7 @@ class Garage:
                 print("Please enter a valid option")
                 self.option()
         else:
-            print("Wrong input .. ")
+            print("Please enter a valid option")
             self.option()
 
 
@@ -81,4 +84,3 @@ class Garage:
 
 
 garage = Garage()
-garage.vehicle_details()
