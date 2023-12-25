@@ -12,9 +12,13 @@ class Renter:
     def __init__(self):
         pass
 
-    def rent_vehicle(self, v_id, user_name):
+    def rent_vehicle(self, v_id, user_name, days):
         conn.update("Garage", "AvailabilityStatus", '"Rented"', f"V_ID = {v_id}")
         print(f'Successfully VehicleID with {v_id} is purchased by {user_name}')
+        self.phone_no = conn.fetchData(table_name="User_Details", columns="Name, Mobile_Number", condition=f"WHERE ID = {user_name}")
+        self.vehicle_data = conn.fetchData(table_name="Garage", columns="BRAND, MODEL, RegistrationNumber", condition=f"WHERE V_ID = {v_id}")
+        self.message = f"Hi {self.phone_no[0][0]}.\nYou have successfully purchased {self.vehicle_data[0][0]} {self.vehicle_data[0][1]} with RegistrationNumber {self.vehicle_data[0][2]} for {days} days"
+        message.rent_successful(phone_no=self.phone_no[0][1], message=self.message)
 
     def can_rent(self, cart, new_item):
         if conn.fetchData(table_name="Garage", columns="AvailabilityStatus", condition=f'WHERE V_ID = {new_item}')[0][0] == 'Available':
@@ -59,7 +63,7 @@ class Renter:
                         self.sno = len(conn.fetchData(table_name="RentalTransactions", columns="*"))
                         query = f'{self.sno + 1}, {user_id}, {i[0]}, CURRENT_DATE(), {daysRented}, 2, true'
                         conn.row_add(table_name="RentalTransactions", columns=self.column, values=query)
-                        self.rent_vehicle(v_id=i[0], user_name=user_id)
+                        self.rent_vehicle(v_id=i[0], user_name=user_id, days=daysRented)
                     print(f"Total cost for purchasing {len(self.cart)} vehicle is Rs.{transaction.sum_money(','.join(map(str, self.cart)))[0][0]}")
                     return
                 else:
@@ -82,9 +86,6 @@ class Renter:
         message.police(time, place, self.lost_vehicle)
 
 
-    # def exchange_vehicle(self):
-    #     conn.update(table_name="RentalTransactions", column_name="DaysRented", set_value=f"DaysRented + {}")
-
     def option(self, user_id):
         print("1 Rent a Vehicle")
         print("2 Rental History")
@@ -93,7 +94,6 @@ class Renter:
             print("3 Return Vehicle")
             print("4 Extend Tenure")
             print("5 Vehicle Lost")
-            print("6 Exchange Vehicle")
         a = input("Please Enter: ").lower()
         if a == 'exit': return
         if a.isdigit() and 0 < int(a) <= 2:
@@ -129,11 +129,11 @@ class Renter:
                         break
                 else:
                     print("The provided vehicle is not purchased by You...")
-            if a == '6':
-                type = input("Enter which type of vehicle are you interested (Car/Bike/Both): ").lower()
-                self.renter_add(type=type if type != "both" else "All", user_id=user_id)
-                v_id = input("What vehicle are you want to exchange from? ")
-                self.exchange_vehicle(v_id)
+            # if a == '6':
+            #     type = input("Enter which type of vehicle are you interested (Car/Bike/Both): ").lower()
+            #     self.renter_add(type=type if type != "both" else "All", user_id=user_id)
+            #     v_id = input("What vehicle are you want to exchange from? ")
+            #     self.exchange_vehicle(v_id)
         else:
             print("Enter a valid option!")
             self.option(user_id=user_id)
