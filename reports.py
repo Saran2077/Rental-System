@@ -63,4 +63,3 @@ class Reports:
             print("Please Enter a valid option!")
             self.option()
 
-re = Reports()

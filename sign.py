@@ -15,9 +15,11 @@ def decrypt(passwd):
         s +=chr((ord(passwd[i]) + ord(passwd[i+1])) // 2)
     return s
 
-email = conn.fetchData("User_Details", "Email")
-password = conn.fetchData("User_Details", "Password")
-user_data = {str(i)[2:-3] : decrypt(str(j)[2:-3]) for i, j in zip(email, password)}
+def refresh():
+    global user_data
+    email = conn.fetchData("User_Details", "Email")
+    password = conn.fetchData("User_Details", "Password")
+    user_data = {str(i)[2:-3] : decrypt(str(j)[2:-3]) for i, j in zip(email, password)}
 
 
 def signin():
@@ -27,7 +29,8 @@ def signin():
         if user_password == user_data[user_name]:
             name = conn.fetchData(table_name="User_Details", columns="Name", condition=f'WHERE email = "{user_name}"')
             print(f"Welcome back {name[0][0]}!")
-            return True
+            id = conn.fetchData(table_name="User_Details", columns="ID", condition=f'WHERE Email = "{user_name}"')
+            return id[0][0]
         print("Wrong Password")
         return False
     print("Wrong username")
@@ -40,6 +43,9 @@ def name(name):
     return False
 def email(email):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+    if email in user_data:
+        print("Username is already existed..")
+        return
     if re.fullmatch(regex, email):
         return True
     return False
@@ -104,16 +110,11 @@ func = [
     password
 ]
 
-import subprocess
-import os
-
-def clear_screen():
-    os.system('cls')
-
 
 
 def login():
     while True:
+        refresh()
         signup = True if input("Type Y for signup N for signin: ").upper() == 'Y' else False
         if signup:
             data = str(len(user_data) + 1)+','
@@ -136,7 +137,8 @@ def login():
                 conn.row_add("User_Details", columns="", values=data[:-1])
 
         else:
-            if signin():
-                break
-            else:
+            id = signin()
+            if id == False:
                 continue
+            else:
+                return id

@@ -15,7 +15,7 @@ class Transaction:
         return False
 
     def sum_money(self, v_id):
-        self.totalMoney = conn.fetchData(table_name="Garage", columns="SUM(RentalPrice)", condition=f"WHERE V_ID IN ({v_id})")
+        self.totalMoney = conn.fetchData(table_name="RentalTransactions", columns="RentalPrice * DaysRented", condition=f"JOIN Garage ON Garage.V_ID = RentalTransactions.V_ID WHERE Garage.V_ID IN ({v_id})")
         return self.totalMoney
 
     def cost_calculate(self, km, damage, price):
@@ -28,6 +28,8 @@ class Transaction:
         if damage == 'high':
             price *= 1.75
         return int(price)
+
+
 
 
 
