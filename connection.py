@@ -1,6 +1,7 @@
 import mysql.connector
 from mysql.connector import Error
 from prettytable import PrettyTable
+import os
 
 class Connection:
     def __init__(self):
@@ -48,6 +49,8 @@ class Connection:
             my_Table.add_row([*i])
         print(my_Table)
 
+    def clearScreen(self):
+        os.system('cls')
 
 
 # create_server_connection = mysql.connector.connect(

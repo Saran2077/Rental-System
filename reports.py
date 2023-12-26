@@ -8,7 +8,7 @@ class Reports:
 
 
     def due(self):
-        self.due_vehicle = conn.fetchData(table_name="Garage", columns='V_ID,BRAND,MODEL,REGISTRATIONNUMBER', condition="WHERE (Running_KM/(3000*(Services+1))) >= 1")
+        self.due_vehicle = conn.fetchData(table_name="Garage", columns='V_ID,BRAND,MODEL,REGISTRATIONNUMBER', condition='WHERE (Running_KM/(3000*(Services+1))) >= 1 AND AvailabilityStatus != "Lost"')
         return self.due_vehicle
 
     def print_due(self):
@@ -35,15 +35,20 @@ class Reports:
         for i in self.dued_vehicle:
             conn.update(table_name="Garage", column_name="Services", set_value="Services+1", condition=f"V_ID = {i[0]}")
 
+    def lost_vehicles(self):
+        self.lost = conn.fetchData(table_name="Garage", columns="*", condition='WHERE AvailabilityStatus = "Lost"')
+        conn.prettyPrint(column="V_ID,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Services,RentalPrice", data=self.lost)
+
     def option(self):
         print("1 Vehicles that are due for service")
         print("2 Show all vehicles")
         print("3 Rented Vehicle")
         print("4 Available Vehicle")
         print("5 To send Vehicles for due")
+        print("6 Lost Vehicles")
         a = input("Please Enter: ").lower()
         if a == 'exit': return
-        if a.isdigit() and int(a) > 0 and int(a) <= 5:
+        if a.isdigit() and int(a) > 0 and int(a) <= 6:
             if a == '1': self.print_due()
             if a == '2': self.vehicle_details()
             if a == '3':
@@ -56,10 +61,16 @@ class Reports:
                 if s not in ("bike", "car", "both"):
                     self.option()
                 else:
-                    self.available(s if s != "both" else "All")
+                    self.available(vehicle=s if s != "both" else "All", admin=True)
             if a == '5':
                 self.send_due()
+            if a == '6':
+                self.lost_vehicles()
         else:
             print("Please Enter a valid option!")
             self.option()
-
+        is_continue = input("Do you want to Continue: (Y/N) ").lower()
+        if is_continue == 'y':
+            self.option()
+        else:
+            return

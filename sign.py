@@ -1,7 +1,9 @@
 import re
 from connection import Connection
+from message import Message
 
 conn = Connection()
+message = Message()
 
 def encrypt(passwd):
     s = ""
@@ -133,9 +135,13 @@ def login():
                     i += 1
 
             if i == 7:
-                print("Account created successfully.")
-                conn.row_add("User_Details", columns="", values=data[:-1])
-
+                name, number, purpose = data.split(',')[1], data.split(',')[4],"Account Creation"
+                otp = message.otp(name=name, number=number, purpose=purpose)
+                if otp == input("Enter The OTP: "):
+                    print("Account created successfully.")
+                    conn.row_add("User_Details", columns="", values=data[:-1])
+                else:
+                    print(f"Sorry {'Sir' if data.split(',')[3] == 'M'  else 'Madam'} the entered otp is wrong...")
         else:
             id = signin()
             if id == False:

@@ -44,6 +44,7 @@ class Garage:
 
 
     def option(self):
+        conn.clearScreen()
         print("1 Add a Vehicle")
         print("2 Remove a Vehicle")
         print("3 Search a Vehicle")
@@ -58,14 +59,18 @@ class Garage:
                 self.option()
             elif self.choice == '2':
                 v_id = input("Please Enter a V_ID to remove the vehicle: ")
-                if v_id in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0] == ("Available"):
+                if int(v_id) in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] == "Available":
                     self.remove_vehicle(v_id)
+                elif int(v_id) in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] == "Rented":
+                    print("Kindly we can't remove this vehicle from our garage it is rented by customer...")
+                elif int(v_id) in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] == "Lost":
+                    print("Sorry sir this vehicle is currently lost...")
                 else:
                     print(f"We dont have any vehicle with this V_ID = {v_id}")
                     self.option()
             elif self.choice == '3':
                 v_id = input("Enter a V_ID to search: ")
-                if int(v_id) in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] == ("Available"):
+                if int(v_id) in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] != ("Lost"):
                     self.search(v_id)
                 else:
                     print(f"We dont have any vehicle with this V_ID = {v_id}")
@@ -78,6 +83,13 @@ class Garage:
         else:
             print("Please enter a valid option")
             self.option()
+        is_continue = input("Do you want to Continue: (Y/N) ").lower()
+        if is_continue == 'y':
+            self.option()
+        else:
+            return
+
+garage = Garage()
 
 
 

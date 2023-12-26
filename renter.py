@@ -49,7 +49,7 @@ class Renter:
         conn.prettyPrint(column="S_NO, USER_ID, V_ID, PICK_DATE, DROP_DATE, RUNNED_KM, Price", data=self.history)
 
     def renter_add(self, type, user_id):
-        report.available(type)
+        report.available(vehicle=type, admin=False)
         print("You can add upto two vehicle (One car/ One Bike)")
         self.cart = []
         while True:
@@ -81,9 +81,9 @@ class Renter:
 
 
 
-    def vehicle_lost(self, v_id, time, place):
-        self.lost_vehicle = conn.fetchData(table_name="Garage", columns="BRAND, MODEL, Color, RegistrationNumber", condition=f'WHERE V_ID = {v_id}')
-        message.police(time, place, self.lost_vehicle)
+    def vehicle_lost(self, v_id, date, time, place):
+        self.lost_vehicle = conn.fetchData(table_name="Garage", columns="BRAND, MODEL, Color, Year, RegistrationNumber", condition=f'WHERE V_ID = {v_id}')
+        message.police(date, time, place, self.lost_vehicle[0])
 
 
     def option(self, user_id):
@@ -122,13 +122,15 @@ class Renter:
             if a == '5':
                 lost = input("Enter the V_ID of the lost Vehicle: ")
                 for i in user_has_pending:
-                    if i[0] == lost:
+                    if i[0] == int(lost):
                         time = input("What time the vehicle get lost? ")
                         place = input("Where did the vehicle get lost? ")
-                        self.vehicle_lost(time, place, lost)
+                        date = input("Where date the vehicle get lost? (dd/mm/yyyy) ")
+                        self.vehicle_lost(v_id=lost, date=date, time=time, place=place)
                         break
                 else:
                     print("The provided vehicle is not purchased by You...")
+
             # if a == '6':
             #     type = input("Enter which type of vehicle are you interested (Car/Bike/Both): ").lower()
             #     self.renter_add(type=type if type != "both" else "All", user_id=user_id)
@@ -137,7 +139,12 @@ class Renter:
         else:
             print("Enter a valid option!")
             self.option(user_id=user_id)
+        is_continue = input("Do you want to Continue: (Y/N) ").lower()
+        if is_continue == 'y':
+            self.option(user_id)
+        else:
+            return
 
 
 
-
+r = Renter()
