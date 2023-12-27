@@ -8,11 +8,11 @@ class Reports:
 
 
     def due(self):
-        self.due_vehicle = conn.fetchData(table_name="Garage", columns='V_ID,BRAND,MODEL,REGISTRATIONNUMBER', condition='WHERE (Running_KM/(3000*(Services+1))) >= 1 AND AvailabilityStatus != "Lost"')
+        self.due_vehicle = conn.fetchData(table_name="Garage", columns='V_ID,BRAND,MODEL,TYPE,REGISTRATIONNUMBER', condition='WHERE (Running_KM/(3000*(Services+1))) >= 1 AND AvailabilityStatus != "Lost"')
         return self.due_vehicle
 
     def print_due(self):
-        column = column = "V_ID,Brand,Model,RegistrationNumber"
+        column = column = "V_ID,Brand,Model,Type,RegistrationNumber"
         conn.prettyPrint(column, self.due())
 
     def vehicle_details(self):
@@ -27,7 +27,7 @@ class Reports:
     def available(self, vehicle, admin=False):
         column = "V_ID,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Services,RentalPrice" if admin else 'V_ID,BRAND,MODEL,YEAR'
         condition = f'TYPE = "{vehicle}" AND '
-        self.available_cars = conn.fetchData("Garage", columns=column, condition=f'WHERE '+ (condition if vehicle != "All" else "") +f'AvailabilityStatus = "Available" AND V_ID NOT IN (SELECT V_ID FROM Garage WHERE (Running_KM/(3000*(Services+1))) >= 1)')
+        self.available_cars = conn.fetchData("Garage", columns=column, condition=f'WHERE '+ (condition if vehicle != "All" else "") +f'AvailabilityStatus = "Available" AND V_ID NOT IN (SELECT V_ID FROM Garage WHERE ((Running_KM/(3000*(Services+1))) >= 1) AND Type = "Car") OR (Running_KM/(1500*(Services+1))) >= 1) AND Type = "Bike")')
         conn.prettyPrint(column, self.available_cars)
 
     def send_due(self):
@@ -40,6 +40,8 @@ class Reports:
         conn.prettyPrint(column="V_ID,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Services,RentalPrice", data=self.lost)
 
     def option(self):
+        conn.clearScreen()
+        print("You are in Reports.")
         print("1 Vehicles that are due for service")
         print("2 Show all vehicles")
         print("3 Rented Vehicle")
@@ -71,6 +73,5 @@ class Reports:
             self.option()
         is_continue = input("Do you want to Continue: (Y/N) ").lower()
         if is_continue == 'y':
-            self.option()
-        else:
-            return
+            if self.option() == None:
+                return

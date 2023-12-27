@@ -3,22 +3,15 @@ from pushbullet import Pushbullet
 
 class Message:
     def __init__(self):
-        API_KEY = "o.7yYfGg2MUqMP4flDy5Zc2xdBMACLl8bd"
+        API_KEY = "o.stOyUvr8fJwufgmx6dG4znkKib1YLCkY"
         self.pb = Pushbullet(API_KEY)
 
     def otp(self, name, number, purpose):
-        print(name, number, purpose)
         self.otp_no = random.randint(10000, 100000)
         message = f"""
 Dear {name},
 
-Your One-Time Password (OTP) for {purpose.title()} is:
-{self.otp_no}
-Please use this code to complete the verification process within the next [Time Frame, e.g., 5 minutes]. Do not share this OTP with anyone for security reasons.
-If you did not request this OTP, please ignore this message.
-
-Thank you,
-Rental System.
+Your One-Time Password (OTP) for {purpose.title()} is: {self.otp_no}
 """
         self.pb.push_sms(device=self.pb.devices[0], number=number, message=message)
         return str(self.otp_no)
@@ -49,8 +42,10 @@ On {date}, my {details[0]} {details[1]}, with registration number {details[4]}, 
 Sincerely,
 ADMIN
         """
-        push = self.pb.push_sms(device=self.pb.devices[0], number="9092786919", message=message)
+        push = self.pb.push_sms(device=self.pb.devices[0], number="8248107803", message=message)
 
 
     def rent_successful(self, phone_no, message):
         push = self.pb.push_sms(device=self.pb.devices[0], number=phone_no, message=message)
+message = Message()
+message.otp(name="Saran", number="9092786919", purpose="")

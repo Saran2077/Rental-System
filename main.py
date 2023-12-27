@@ -21,6 +21,3 @@ if id in admin:
         report.option()
 else:
     renter.option(user_id=id)
-
-
-

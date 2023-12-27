@@ -84,9 +84,12 @@ class Renter:
     def vehicle_lost(self, v_id, date, time, place):
         self.lost_vehicle = conn.fetchData(table_name="Garage", columns="BRAND, MODEL, Color, Year, RegistrationNumber", condition=f'WHERE V_ID = {v_id}')
         message.police(date, time, place, self.lost_vehicle[0])
+        conn.update(table_name="Garage", column_name="AvailabilityStatus", set_value='"Lost"', condition=f"V_ID = {v_id}")
 
 
     def option(self, user_id):
+        conn.clearScreen()
+        print("You are in Renter Page.")
         print("1 Rent a Vehicle")
         print("2 Rental History")
         user_has_pending = conn.fetchData(table_name="RentalTransactions", columns="V_ID", condition=f'WHERE USER_ID = {user_id}')
@@ -141,9 +144,8 @@ class Renter:
             self.option(user_id=user_id)
         is_continue = input("Do you want to Continue: (Y/N) ").lower()
         if is_continue == 'y':
-            self.option(user_id)
-        else:
-            return
+            if self.option() == None:
+                return
 
 
 

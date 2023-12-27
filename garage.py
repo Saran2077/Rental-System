@@ -45,6 +45,7 @@ class Garage:
 
     def option(self):
         conn.clearScreen()
+        print("You are in Vehicle Inventory.")
         print("1 Add a Vehicle")
         print("2 Remove a Vehicle")
         print("3 Search a Vehicle")
@@ -85,9 +86,9 @@ class Garage:
             self.option()
         is_continue = input("Do you want to Continue: (Y/N) ").lower()
         if is_continue == 'y':
-            self.option()
-        else:
-            return
+            if self.option() == None:
+                return
+
 
 garage = Garage()
 

@@ -1,4 +1,5 @@
 import re
+import time
 from connection import Connection
 from message import Message
 
@@ -30,12 +31,17 @@ def signin():
         user_password = input("Enter your password: ")
         if user_password == user_data[user_name]:
             name = conn.fetchData(table_name="User_Details", columns="Name", condition=f'WHERE email = "{user_name}"')
+            conn.clearScreen()
             print(f"Welcome back {name[0][0]}!")
             id = conn.fetchData(table_name="User_Details", columns="ID", condition=f'WHERE Email = "{user_name}"')
             return id[0][0]
         print("Wrong Password")
+        print("Try again in 2s.")
+        time.sleep(2)
         return False
     print("Wrong username")
+    print("Try again in 2s.")
+    time.sleep(2)
     return False
 
 
@@ -117,6 +123,7 @@ func = [
 def login():
     while True:
         refresh()
+        conn.clearScreen()
         signup = True if input("Type Y for signup N for signin: ").upper() == 'Y' else False
         if signup:
             data = str(len(user_data) + 1)+','
