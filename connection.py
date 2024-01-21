@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 from prettytable import PrettyTable
 import os
+import time
 
 class Connection:
     def __init__(self):
@@ -22,6 +23,7 @@ class Connection:
         return 0 if self.column_count == None else self.column_count
 
     def fetchData(self, table_name, columns, condition=""):
+        print((f"SELECT {columns} FROM {table_name} {condition};"))
         self.cursor.execute(f"SELECT {columns} FROM {table_name} {condition};")
         self.data = self.cursor.fetchall()
         return self.data
@@ -49,8 +51,16 @@ class Connection:
             my_Table.add_row([*i])
         print(my_Table)
 
-    def clearScreen(self):
-        os.system('cls')
+    # def clearScreen(self):
+    #     os.system('cls')
+
+    def clearScreen(self, duration=1, frames_per_second=10):
+        total_frames = duration * frames_per_second
+        for frame in range(total_frames):
+            os.system('cls')
+            print("Clearing Screen: {:.2%}".format(frame / total_frames))
+            time.sleep(1 / frames_per_second)
+            os.system('cls')
 
 
 # create_server_connection = mysql.connector.connect(

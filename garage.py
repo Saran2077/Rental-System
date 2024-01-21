@@ -68,22 +68,18 @@ class Garage:
                     print("Sorry sir this vehicle is currently lost...")
                 else:
                     print(f"We dont have any vehicle with this V_ID = {v_id}")
-                    self.option()
             elif self.choice == '3':
                 v_id = input("Enter a V_ID to search: ")
                 if int(v_id) in vehicle_count and conn.fetchData(columns="AvailabilityStatus", table_name="Garage", condition=f"WHERE V_ID = {v_id}")[0][0] != ("Lost"):
                     self.search(v_id)
                 else:
                     print(f"We dont have any vehicle with this V_ID = {v_id}")
-                    self.option()
             elif self.choice == '4':
                 self.vehicle_details()
             else:
                 print("Please enter a valid option")
-                self.option()
         else:
             print("Please enter a valid option")
-            self.option()
         is_continue = input("Do you want to Continue: (Y/N) ").lower()
         if is_continue == 'y':
             if self.option() == None:

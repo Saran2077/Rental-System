@@ -144,7 +144,7 @@ class Renter:
             self.option(user_id=user_id)
         is_continue = input("Do you want to Continue: (Y/N) ").lower()
         if is_continue == 'y':
-            if self.option() == None:
+            if self.option(user_id=user_id) == None:
                 return
 
 

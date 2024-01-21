@@ -1,4 +1,5 @@
 from connection import Connection
+import time
 
 conn = Connection()
 
@@ -27,7 +28,7 @@ class Reports:
     def available(self, vehicle, admin=False):
         column = "V_ID,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Services,RentalPrice" if admin else 'V_ID,BRAND,MODEL,YEAR'
         condition = f'TYPE = "{vehicle}" AND '
-        self.available_cars = conn.fetchData("Garage", columns=column, condition=f'WHERE '+ (condition if vehicle != "All" else "") +f'AvailabilityStatus = "Available" AND V_ID NOT IN (SELECT V_ID FROM Garage WHERE ((Running_KM/(3000*(Services+1))) >= 1) AND Type = "Car") OR (Running_KM/(1500*(Services+1))) >= 1) AND Type = "Bike")')
+        self.available_cars = conn.fetchData("Garage", columns=column, condition=f'WHERE '+ (condition if vehicle != "All" else "") +f'AvailabilityStatus = "Available" AND V_ID NOT IN (SELECT V_ID FROM Garage WHERE ((Running_KM/(3000*(Services+1))) >= 1) AND Type = "Car") OR ((Running_KM/(1500*(Services+1))) >= 1) AND Type = "Bike"))')
         conn.prettyPrint(column, self.available_cars)
 
     def send_due(self):
@@ -40,38 +41,52 @@ class Reports:
         conn.prettyPrint(column="V_ID,Brand,Model,Year,Color,RegistrationNumber,AvailabilityStatus,Services,RentalPrice", data=self.lost)
 
     def option(self):
-        conn.clearScreen()
-        print("You are in Reports.")
-        print("1 Vehicles that are due for service")
-        print("2 Show all vehicles")
-        print("3 Rented Vehicle")
-        print("4 Available Vehicle")
-        print("5 To send Vehicles for due")
-        print("6 Lost Vehicles")
-        a = input("Please Enter: ").lower()
-        if a == 'exit': return
-        if a.isdigit() and int(a) > 0 and int(a) <= 6:
-            if a == '1': self.print_due()
-            if a == '2': self.vehicle_details()
-            if a == '3':
-                s = input("Bike/Car/Both: ").lower()
-                if s not in ["bike", "car", "both"]:
-                    self.option()
-                else: self.rented(s if s != "both" else "All")
-            if a == '4':
-                s = input("Bike/Car/Both: ").lower()
-                if s not in ("bike", "car", "both"):
-                    self.option()
+        while True:
+            print("You are in Reports.")
+            print("1 Vehicles that are due for service")
+            print("2 Show all vehicles")
+            print("3 Rented Vehicle")
+            print("4 Available Vehicle")
+            print("5 To send Vehicles for due")
+            print("6 Lost Vehicles")
+            print('Q for quit.')
+            a = input("Please Enter: ").lower()
+            if a == 'q': 
+                conn.clearScreen()
+                break
+            elif a.isdigit() and int(a) > 0 and int(a) <= 6:
+                if a == '1': self.print_due()
+                if a == '2': self.vehicle_details()
+                if a == '3':
+                    s = input("Bike/Car/Both: ").lower()
+                    if s not in ["bike", "car", "both"]:
+                        print("Invalid Choice!")
+                        time.sleep(2)
+                        conn.clearScreen()
+                    else: self.rented(s if s != "both" else "All")
+                if a == '4':
+                    s = input("Bike/Car/Both: ").lower()
+                    if s not in ("bike", "car", "both"):
+                        print("Invalid Choice!")
+                        time.sleep(2)
+                        conn.clearScreen()
+                    else:
+                        self.available(vehicle=s if s != "both" else "All", admin=True)
+                if a == '5':
+                    self.send_due()
+                if a == '6':
+                    self.lost_vehicles()
+                is_continue = input("Do you want to continue (Y/N) ").lower()
+                if is_continue == 'y':
+                    conn.clearScreen()
+                elif is_continue == 'n':
+                    conn.clearScreen()
+                    break 
                 else:
-                    self.available(vehicle=s if s != "both" else "All", admin=True)
-            if a == '5':
-                self.send_due()
-            if a == '6':
-                self.lost_vehicles()
-        else:
-            print("Please Enter a valid option!")
-            self.option()
-        is_continue = input("Do you want to Continue: (Y/N) ").lower()
-        if is_continue == 'y':
-            if self.option() == None:
-                return
+                    print("Invalid choice...")
+                    time.sleep(2)
+                    conn.clearScreen()
+            else:
+                print("Please Enter a valid option!")
+                time.sleep(2)
+

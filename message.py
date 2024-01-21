@@ -3,8 +3,9 @@ from pushbullet import Pushbullet
 
 class Message:
     def __init__(self):
-        API_KEY = "o.stOyUvr8fJwufgmx6dG4znkKib1YLCkY"
-        self.pb = Pushbullet(API_KEY)
+        # API_KEY = "o.stOyUvr8fJwufgmx6dG4znkKib1YLCkY"
+        # self.pb = Pushbullet(API_KEY)
+        pass
 
     def otp(self, name, number, purpose):
         self.otp_no = random.randint(10000, 100000)
@@ -47,5 +48,3 @@ ADMIN
 
     def rent_successful(self, phone_no, message):
         push = self.pb.push_sms(device=self.pb.devices[0], number=phone_no, message=message)
-message = Message()
-message.otp(name="Saran", number="9092786919", purpose="")
